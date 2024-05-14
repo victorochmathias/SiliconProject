@@ -1,10 +1,11 @@
-﻿
+﻿@rendermode InteractiveServer
 
 
 <section class="subscribe">
     <div class="container">
         <div class="content">
             <EditForm FormName="subscribeform" Model="SubscribeForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+                <DataAnnotationsValidator />
                 <div class="headline-and-image">
                     <h2>Don't Want to Miss Anything?</h2>
                     <img src="/Images/curly-arrow.svg">
@@ -52,14 +53,9 @@
                 
 
                 <div class="status-info">
-                    @if (!string.IsNullOrEmpty(StatusMessage))
-                    {
-                        <span class="error-msg mt-3">@StatusMessage</span>
-                    }
-                    else
-                    {
-                        <p>* Yes, I agree to the terms and privacy policy.</p>
-                    }
+                    <ValidationMessage For="@(() => SubscribeForm.Email)" class="error-msg" />
+                    <p>* Yes, I agree to the terms and privacy policy.</p>
+                    
 
                 </div>
 
@@ -77,6 +73,11 @@
     [SupplyParameterFromForm]
     public SubscribeFormModel SubscribeForm { get; set; } = new SubscribeFormModel();
 
+
+
+    
+
+
     private async Task OnValidSubmit()
     {
         try
@@ -86,14 +87,23 @@
                 StatusMessage = "Thank you for subscribing!";
 
         }
-        catch {}
+        catch
+        {
+            SubscribeForm = new SubscribeFormModel();
+            StatusMessage = "Unable to subscribe right now. Please try again later.";
+        }
+
+
+        SubscribeForm = new SubscribeFormModel();
+
     }
 
 
     public class SubscribeFormModel
     {
-        [Required]
+        
         [EmailAddress]
+        [Required(ErrorMessage = "You must provide an email address")]
         [Display(Name = "Subscribe", Prompt = "Your email")]
         public string Email { get; set; } = null!;
         public bool DailyNewletter { get; set; }
