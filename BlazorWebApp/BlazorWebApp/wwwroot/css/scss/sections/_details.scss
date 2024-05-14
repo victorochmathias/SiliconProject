@@ -1,0 +1,403 @@
+.account-details {
+    background-color: var(--color-gray-000);
+
+
+    .container {
+
+        @include lg {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            grid-template-areas: 'my-aside a-details';
+        }
+
+
+        aside {
+            grid-area: my-aside;
+            margin: 0;
+            padding: 0;
+
+            @include lg {
+                width: 20rem;
+                padding-right: 2rem;
+                border-right: 1px solid var(--color-gray-400) !important;
+            }
+
+            .profile {
+                text-align: center;
+                padding-top: 3rem;
+
+
+
+
+                .profile-image {
+                    position: relative;
+                    z-index: 1;
+
+                    img {
+                        height: 120px;
+                        width: 120px;
+                        border-radius: 50%;
+                        object-fit: cover;
+                    }
+
+                    form {
+                        .btn-white-circle {
+                            height: 36px;
+                            width: 36px;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            border-radius: 50%;
+                            border: 1px solid var(--color-gray-300) !important;
+                            text-decoration: none;
+                            color: var(--color-gray-900) !important;
+                            position: absolute;
+                            right: 70px;
+                            bottom: 10px;
+                            background-color: var(--color-gray-000) !important;
+                            z-index: 2;
+                        }
+                    }
+                }
+
+                .profile-info {
+
+
+                    h3 {
+                        font-weight: 800;
+                        color: var(--color-gray-900) !important;
+                    }
+
+                    p {
+                        color: var(--color-gray-700) !important;
+                    }
+                }
+            }
+
+            nav {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 2rem;
+
+                @include lg {
+                    display: grid;
+                    flex-direction: column;
+                    justify-content: center;
+                }
+
+
+
+
+                .btn-nav {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-decoration: none;
+                    color: var(--color-gray-800) !important;
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                    border-radius: 6px;
+
+                    i {
+                        color: var(--color-gray-600) !important;
+
+                        @include lg {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+
+                    @include lg {
+                        width: 20rem;
+
+                        &:hover {
+                            background-color: var(--color-gray-200) !important;
+                        }
+                    }
+                }
+
+
+
+                #nav-settings {
+
+                    span {
+                        display: none;
+
+                        @include lg {
+                            display: block;
+                        }
+                    }
+
+                    @include lg {
+                        justify-content: start;
+
+
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+
+                #nav-security {
+                    span {
+                        display: none;
+
+                        @include lg {
+                            display: block;
+                        }
+                    }
+
+                    @include lg {
+                        justify-content: start;
+
+
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+
+                #nav-bookmark {
+                    span {
+                        display: none;
+
+                        @include lg {
+                            display: block;
+                        }
+                    }
+
+                    @include lg {
+                        justify-content: start;
+
+
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+
+                #nav-signout {
+                    span {
+                        display: none;
+
+                        @include lg {
+                            display: block;
+                        }
+                    }
+
+                    @include lg {
+                        justify-content: start;
+
+
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+                }
+
+                #signout-btn {
+                    display: none;
+                    color: $gray-800;
+                    text-decoration: none;
+
+                    i {
+                        color: $gray-600;
+                        margin-left: 2rem;
+                        margin-right: 1rem;
+                    }
+
+                    @include lg {
+                        display: none;
+                        padding: 8px 0;
+                        background-color: transparent;
+                        border-radius: 6px;
+
+                        &:hover {
+                            background-color: $gray-200;
+                        }
+                    }
+                }
+            }
+        }
+
+        .account-information {
+            grid-area: a-details;
+            padding-top: 3rem;
+            padding-bottom: 5rem;
+
+            @include lg {
+                margin-left: 6rem;
+            }
+
+
+
+
+            .basicinfo-form {
+                border-bottom: 1px solid $gray-400;
+
+
+
+
+                h1 {
+                    color: var(--color-gray-900) !important;
+                    @include h2;
+                    text-align: center;
+
+
+                    @include md {
+                        @include h1;
+                    }
+
+                    @include lg {
+                        text-align: start;
+                    }
+                }
+
+                h5 {
+                    text-align: center;
+                    color: $theme;
+
+
+                    @include lg {
+                        text-align: start;
+                    }
+                }
+
+                .form-content {
+                    margin-top: 1rem;
+                    margin-bottom: 3rem;
+                    display: grid;
+                    grid-template-columns: auto auto;
+                    grid-column-gap: 2.5%;
+                    grid-template-areas: 'fname fname' 'lname lname' 'email email' 'phone phone' 'bio bio' 'buttons buttons';
+
+                    @include md {
+                        grid-template-areas: 'fname lname' 'email phone' 'bio bio' 'buttons buttons';
+                    }
+
+
+
+                    #form-firstname {
+                        grid-area: fname;
+                    }
+
+                    #form-lastname {
+                        grid-area: lname;
+                    }
+
+                    #form-email {
+                        grid-area: email;
+                    }
+
+                    #form-phone {
+                        grid-area: phone;
+                    }
+
+                    #form-bio {
+                        grid-area: bio;
+                    }
+
+
+
+                    .my-buttons {
+                        grid-area: buttons;
+                        display: flex;
+                        gap: 2%;
+                        margin-top: 0.5rem;
+
+                        #btn-info-reset {
+                            width: 100%;
+
+                            @include md {
+                                width: 6rem;
+                            }
+                        }
+
+                        #btn-info-submit {
+                            width: 100%;
+
+                            @include md {
+                                width: 9rem;
+                            }
+                        }
+                    }
+                }
+            }
+
+            #adressinfo-form {
+                padding-top: 3rem;
+
+                h5 {
+                    text-align: center;
+                    color: $theme;
+
+                    @include lg {
+                        text-align: start;
+                    }
+                }
+
+                .form-adress-content {
+                    display: grid;
+                    grid-template-columns: auto auto;
+                    grid-column-gap: 2.5%;
+                    grid-template-areas: 'al1 al1' 'al2 al2' 'postal postal' 'city city' 'buttons buttons';
+
+                    .input-group {
+                    }
+
+                    #adressline_1 {
+                        grid-area: al1;
+                    }
+
+                    #adressline_2 {
+                        grid-area: al2;
+                    }
+
+                    #postalcode {
+                        grid-area: postal;
+                    }
+
+                    #city {
+                        grid-area: city;
+                    }
+
+                    .my-buttons {
+                        grid-area: buttons;
+                        display: flex;
+                        gap: 2%;
+                        margin-top: 0.5rem;
+
+
+                        #btn-adress-reset {
+                            grid-area: btn-adress-reset;
+                            width: 100%;
+
+                            @include md {
+                                width: 6rem;
+                            }
+                        }
+
+                        #btn-adress-submit {
+                            grid-area: btn-adress-submit;
+                            width: 100%;
+
+                            @include md {
+                                width: 9rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

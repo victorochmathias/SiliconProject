@@ -1,0 +1,115 @@
+.showcase {
+    background-color: var(--color-gray-000);
+    position: relative;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+
+    @include lg {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+    }
+
+    @include xxl {
+        padding-bottom: 12rem;
+    }
+
+    .background-image {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        display: none;
+        height: auto;
+        width: 45%;
+
+
+
+        @include xl {
+            width: 50%;
+            display: block;
+        }
+
+        @include xxl {
+            width: 45%;
+        }
+    }
+
+    .container {
+
+        @include xl {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .content {
+            text-align: center;
+
+            @include xl {
+                text-align: start;
+            }
+
+            h1 {
+                color: var(--color-gray-900) !important;
+                @include h2;
+
+                @include lg {
+                    @include d4;
+                }
+            }
+
+            p {
+                color: var(--color-gray-600) !important;
+                margin: 20px 0 40px 0;
+                @include text-m;
+
+                @include lg {
+                    margin: 40px 0 50px 0;
+                    @include text-lg;
+                }
+            }
+
+            .btn-theme-s {
+                display: inline-block;
+                margin-bottom: 2rem;
+            }
+
+            h6 {
+                color: var(--color-gray-900) !important;
+                font-weight: 800;
+                margin: 150px 0 30px 0;
+                display: none;
+
+                @include xl {
+                    margin: 100px 0 30px 0;
+                    display: flex;
+                }
+            }
+
+
+            .brands-box {
+                display: flex;
+                justify-content: center;
+
+                @include xl {
+                    justify-content: start;
+                }
+
+                .brands {
+                    display: grid;
+                    gap: 1rem;
+                    grid-template-columns: 1fr 1fr;
+
+                    @include md {
+                        display: flex;
+                    }
+
+                    img {
+                        width: 120px;
+                    }
+                }
+            }
+        }
+
+        .empty-box {
+        }
+    }
+}

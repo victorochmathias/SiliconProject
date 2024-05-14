@@ -1,0 +1,107 @@
+﻿
+
+
+<section class="subscribe">
+    <div class="container">
+        <div class="content">
+            <EditForm FormName="subscribeform" Model="SubscribeForm" OnValidSubmit="OnValidSubmit" method="post" novalidate>
+                <div class="headline-and-image">
+                    <h2>Don't Want to Miss Anything?</h2>
+                    <img src="/Images/curly-arrow.svg">
+                </div>
+                <div class="checkbox-section">
+                    <h6>Sign up for Newsletters</h6>
+                    <div class="checkbox-area">
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.DailyNewletter" />
+                            <span class="min-checkmark"></span>
+                            <p>Daily Newsletter</p>
+                        </label>
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.AdvertisingUpdates" />
+                            <span class="min-checkmark"></span>
+                            <p>Advertising Updates</p>
+                        </label>
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.WeekInReview" />
+                            <span class="min-checkmark"></span>
+                            <p>Week in Review</p>
+                        </label>
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.EventUpdates" />
+                            <span class="min-checkmark"></span>
+                            <p>Event Updates</p>
+                        </label>
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.StartupsWeekly" />
+                            <span class="min-checkmark"></span>
+                            <p>Startups Weekly</p>
+                        </label>
+                        <label class="checkbox-box">
+                            <InputCheckbox @bind-Value="SubscribeForm.Podcasts" />
+                            <span class="min-checkmark"></span>
+                            <p>Podcasts</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="input-and-sub-btn">
+                    <InputText type="email" id="emailInput" @bind-Value="SubscribeForm.Email" placeholder="Enter your email" />
+                    <button class="btn-theme-s" type="submit">Subscribe*</button>
+
+                </div>
+                
+
+                <div class="status-info">
+                    @if (!string.IsNullOrEmpty(StatusMessage))
+                    {
+                        <span class="error-msg mt-3">@StatusMessage</span>
+                    }
+                    else
+                    {
+                        <p>* Yes, I agree to the terms and privacy policy.</p>
+                    }
+
+                </div>
+
+            </EditForm>
+        </div>
+    </div>
+</section>
+
+@code {
+    [SupplyParameterFromQuery]
+    public string StatusMessage { get; set; } = null!;
+
+
+
+    [SupplyParameterFromForm]
+    public SubscribeFormModel SubscribeForm { get; set; } = new SubscribeFormModel();
+
+    private async Task OnValidSubmit()
+    {
+        try
+        {
+            var result = await http.PostAsJsonAsync("https://newletterprovider-silicon-vicmat.azurewebsites.net/api/subscribe", SubscribeForm);
+            if (result.IsSuccessStatusCode)
+                StatusMessage = "Thank you for subscribing!";
+
+        }
+        catch {}
+    }
+
+
+    public class SubscribeFormModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Subscribe", Prompt = "Your email")]
+        public string Email { get; set; } = null!;
+        public bool DailyNewletter { get; set; }
+        public bool AdvertisingUpdates { get; set; }
+        public bool WeekInReview { get; set; }
+        public bool EventUpdates { get; set; }
+        public bool StartupsWeekly { get; set; }
+        public bool Podcasts { get; set; }
+        
+    }
+}
