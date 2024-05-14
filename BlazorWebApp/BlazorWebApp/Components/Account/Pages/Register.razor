@@ -1,145 +1,200 @@
 ﻿@page "/Account/Register"
+@rendermode InteractiveServer
 
-@using System.ComponentModel.DataAnnotations
-@using System.Text
-@using System.Text.Encodings.Web
-@using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.WebUtilities
-@using BlazorWebApp.Data
 
-@inject UserManager<ApplicationUser> UserManager
-@inject IUserStore<ApplicationUser> UserStore
-@inject SignInManager<ApplicationUser> SignInManager
-@inject IEmailSender<ApplicationUser> EmailSender
-@inject ILogger<Register> Logger
-@inject NavigationManager NavigationManager
-@inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Register</PageTitle>
+<PageTitle>Sign up</PageTitle>
 
-<h1>Register</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+
+<section id="signup">
+    <div class="container">
+        
+        <EditForm FormName="signupform" Model="SignUpForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post"  novalidate>
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="error-msg">
+                    @StatusMessage
+                </div>
+            }
+            <h1>Create Account</h1>
+            <p>Already have an account? <a href="/account/login">Sign in here</a>.</p>
+
+            <div class="content">
+                <div id="form-firstname" class="input-group">
+                    <label>First name</label>
+                    <InputText @bind-Value="SignUpForm.FirstName" />
+                    <ValidationMessage For="() => SignUpForm.FirstName" />
+                </div>
+                <div id="form-lastname" class="input-group">
+                    <label>Last name</label>
+                    <InputText @bind-Value="SignUpForm.LastName" />
+                    <ValidationMessage For="() => SignUpForm.LastName" /> 
+                </div>
+                <div id="form-email" class="input-group">
+                    <label>Email</label>
+                    <InputText @bind-Value="SignUpForm.Email" type="email" />
+                    <ValidationMessage For="() => SignUpForm.Email" />
+                </div>
+                <div id="form-password" class="input-group">
+                    <label>Password</label>
+                    <InputText @bind-Value="SignUpForm.Password" type="password" />
+                    <ValidationMessage For="() => SignUpForm.Password" />
+                </div>
+                <div id="form-confirm" class="input-group">
+                    <label>Confirm password</label>
+                    <InputText @bind-Value="SignUpForm.ConfirmPassword" type="password" />
+                    <ValidationMessage For="() => SignUpForm.ConfirmPassword" />
+                </div>
+                <label class="checkbox-box">
+                    <InputCheckbox @bind-Value="SignUpForm.TermsAndConditions" />
+                    <span class="min-checkmark"></span>
+                    <p>I agree to the <a href="#">Terms</a> & <a href="#">Conditions</a>.</p>
+                </label>
+                <ValidationMessage For="() => SignUpForm.TermsAndConditions" />
+
+                <button id="form-submit" class="btn-theme-s" type="submit">Sign up</button>
             </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="confirm-password">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
+
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
-</div>
+</section>
+
+
 
 @code {
-    private IEnumerable<IdentityError>? identityErrors;
-
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    [SupplyParameterFromQuery]
+    private string StatusMessage { get; set; } = "";
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+    [SupplyParameterFromForm]
+    private SignUpFormModel SignUpForm { get; set; } = new();
 
-    public async Task RegisterUser(EditContext editContext)
+    public async Task OnValidSubmit(EditContext editContext)
     {
-        var user = CreateUser();
-
-        await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-        var emailStore = GetEmailStore();
-        await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-        var result = await UserManager.CreateAsync(user, Input.Password);
-
-        if (!result.Succeeded)
+        var user = new ApplicationUser
         {
-            identityErrors = result.Errors;
+            UserProfile = new UserProfile
+            {
+                FirstName = SignUpForm.FirstName,
+                LastName = SignUpForm.LastName
+            },
+            UserName = SignUpForm.Email,
+            Email = SignUpForm.Email
+        };
+
+        try
+        {
+
+            var alreadyExists = await UserManager.FindByEmailAsync(SignUpForm.Email);
+            if (alreadyExists != null)
+            {
+                StatusMessage = "An account with this email address already exists.";
+                return;
+            }
+
+            var result = await UserManager.CreateAsync(user, SignUpForm.Password);
+            if (!result.Succeeded)
+            {
+                StatusMessage = "Unable to register account. Please try again.";
+                return;
+            };
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = "An error occurred while creating the account.";
             return;
         }
 
-        Logger.LogInformation("User created a new account with password.");
+        await http.PostAsJsonAsync("", SignUpForm); //lägg till confirmation email url'en här!!
 
-        var userId = await UserManager.GetUserIdAsync(user);
-        var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-        var callbackUrl = NavigationManager.GetUriWithQueryParameters(
-            NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-            new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
-
-        await EmailSender.SendConfirmationLinkAsync(user, Input.Email, HtmlEncoder.Default.Encode(callbackUrl));
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
-            RedirectManager.RedirectTo(
-                "Account/RegisterConfirmation",
-                new() { ["email"] = Input.Email, ["returnUrl"] = ReturnUrl });
+            RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
         }
 
         await SignInManager.SignInAsync(user, isPersistent: false);
         RedirectManager.RedirectTo(ReturnUrl);
+        
     }
 
-    private ApplicationUser CreateUser()
-    {
-        try
-        {
-            return Activator.CreateInstance<ApplicationUser>();
-        }
-        catch
-        {
-            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
-        }
-    }
+   
 
-    private IUserEmailStore<ApplicationUser> GetEmailStore()
+    public class SignUpFormModel
     {
-        if (!UserManager.SupportsUserEmail)
-        {
-            throw new NotSupportedException("The default UI requires a user store with email support.");
-        }
-        return (IUserEmailStore<ApplicationUser>)UserStore;
-    }
+        [DataType(DataType.Text)]
+        [Display(Name = "First name", Prompt = "Your first name")]
+        [Required(ErrorMessage = "A valid first name is required")]
+        public string FirstName { get; set; } = null!;
 
-    private sealed class InputModel
-    {
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; } = "";
 
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = "";
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Last name", Prompt = "Your last name")]
+        [Required(ErrorMessage = "A valid last name is required")]
+        public string LastName { get; set; } = null!;
+
+
+
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Email name", Prompt = "Your email")]
+        [Required(ErrorMessage = "A valid email adress is required")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email")]
+        public string Email { get; set; } = null!;
+
+
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; } = "";
+        [Display(Name = "Password", Prompt = "Your password")]
+        [Required(ErrorMessage = "A password is required")]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*[\W_]).{8,}$", ErrorMessage = "Invalid password")]
+        public string Password { get; set; } = null!;
+
+
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password", Prompt = "Confirm your password")]
+        [Required(ErrorMessage = "Password must be confirmed")]
+        [Compare(nameof(Password), ErrorMessage = "Password must be confirmed")]
+        public string ConfirmPassword { get; set; } = null!;
+
+
+
+        
+        [Display(Name = "I agree to the Terms & Conditions.", Prompt = "Terms and Conditions")]
+        public bool TermsAndConditions { get; set; }
     }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
