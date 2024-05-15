@@ -63,7 +63,7 @@
 
     private async Task OnValidSubmit()
     {
-        var result = await http.PostAsJsonAsync("", new { Email = Email, Code = VerifyCodeForm.Code }); //Lägg till code function url här.
+        var result = await http.PostAsJsonAsync("https://verificationprovider-silicon-backend.azurewebsites.net/api/validate?code=U6-niLiFswlSzJ-SBdZ4QjfvA-oVzbmoHZNbQ3hXRZDBAzFu5f2yBg%3D%3D", new { Email = Email, Code = VerifyCodeForm.Code }); //Lägg till code function url här.
         if (result.IsSuccessStatusCode)
         {
             var user = await UserManager.FindByEmailAsync(Email!);

@@ -109,7 +109,7 @@
             return;
         }
 
-        await http.PostAsJsonAsync("", SignUpForm); //lägg till confirmation email url'en här!!
+        await http.PostAsJsonAsync("https://verificationprovider-silicon-backend.azurewebsites.net/api/validate?code=cSobmi3A3Hy2A3etTkZfFS8d16i5evEARlZkWuwY9dxAAzFuV1Avcg%3D%3D@", SignUpForm); //lägg till confirmation email url'en här!!
 
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
