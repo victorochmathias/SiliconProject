@@ -10,9 +10,58 @@
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
 
-<PageTitle>Log in</PageTitle>
+<PageTitle>Sign in</PageTitle>
 
-<h1>Log in</h1>
+
+<section id="signin">
+    <div class="container">
+        <StatusMessage Message="@errorMessage" />
+        <EditForm Model="Input" method="post" OnValidSubmit="LoginUser" FormName="login" novalidate>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" role="alert" />
+
+            <h1>Welcome Back</h1>
+            <p>Don't' have an account yet? <a href="/account/register">Sign up here</a>.</p>
+
+            <div class="content">
+
+                <div id="form-email" class="input-group">
+                    <label for="email" class="form-label">Email</label>
+                    <InputText @bind-Value="Input.Email" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <ValidationMessage For="() => Input.Email" class="text-danger" />
+                </div>
+                <div id="form-password" class="input-group">
+                    <label for="password">Password</label>
+                    <InputText type="password" @bind-Value="Input.Password" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <ValidationMessage For="() => Input.Password" class="text-danger" />
+                </div>
+
+                <div id="form-remember" class="checkbox">
+                    <label class="checkbox-box">
+                        <InputCheckbox @bind-Value="Input.RememberMe" />
+                        <span class="min-checkmark"></span>
+                        <p>Keep me signed in.</p>
+                    </label>
+                </div>
+                <div class="btn-and-forgot-area">
+                    <button id="form-submit" class="btn-theme-s mb-3" type="submit">Sign in</button>
+                    <a id="form-forgot-password" href="/Account/ForgotPassword">Forgot your password?</a>
+                </div>
+                <div class="external-providers">
+                    <h6>Or sign in with your social account</h6>
+                    <div class="providers">
+                        <a class="btn-gray" href="#"><i class="fa-brands fa-google"></i>Google</a>
+                        <a class="btn-gray" href="#"><i class="fa-brands fa-facebook"></i>Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+        @* <ExternalLoginPicker /> *@
+    </div>
+</section>
+
+
+@* <h1>Log in</h1>
 <div class="row">
     <div class="col-md-4">
         <section>
@@ -62,7 +111,7 @@
             <ExternalLoginPicker />
         </section>
     </div>
-</div>
+</div> *@
 
 @code {
     private string? errorMessage;
@@ -71,7 +120,7 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
+    private LoginModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
@@ -112,7 +161,7 @@
         }
     }
 
-    private sealed class InputModel
+    private sealed class LoginModel
     {
         [Required]
         [EmailAddress]
