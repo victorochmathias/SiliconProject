@@ -1,0 +1,161 @@
+﻿@using System.Text.Json
+@using BlazorWebApp.Business.Models
+@using System.Text
+
+@attribute [StreamRendering]
+
+
+<section class="courses">
+    <div class="container">
+        <div class="header">
+            <h1>Courses</h1>
+            <form id="form-filters">
+                <select>
+                    <option>All categories</option>
+                </select>
+                <div class="input-search-group">
+                    <input id="searchQuery" name="searchQuery" placeholder="Search courses" />
+                    <i class="fa-regular fa-search"></i>
+                </div>
+            </form>
+        </div>
+
+        <div class="course-list">
+            @if (courses == null)
+            {
+                <div><i class="fa-sharp fa-solid fa-spinner-third fa-spin"></i></div>
+            }
+            else
+            {
+                @foreach (var item in courses)
+                {
+                    var link = $"courses/details/{item.Id}";
+                    <a href="@link" class="course-link">
+                    <div class="course">
+                        @if (item.IsBestseller)
+                        {
+                            <div class="best-seller">Best Seller</div>
+                        }
+
+                        <img src="@item.ImageUri" />
+                        <div class="content">
+
+                            <h5 class="course-title">@item.Title</h5>
+                            <div class="course-author">By @item.Author</div>
+                            <div class="course-prices">
+                                @if (!string.IsNullOrEmpty(item.DiscountPrice) && Convert.ToDouble(item.DiscountPrice) > 0)
+                                {
+                                    <div class="discount-price">$@item.DiscountPrice</div>
+                                    <div class="original-price strikethrough">$@item.Price</div>
+                                }
+                                else
+                                {
+                                    <div class="original-price">$@item.Price</div>
+                                }
+                            </div>
+
+                            <div class="course-footer">
+                                <div class="course-hours"><i class="fa-regular fa-clock"></i> @item.Hours hours</div>
+                                <div class="course-likes">
+                                    <i class="fa-regular fa-thumbs-up"></i>
+                                    <span>@item.LikesInProcent%</span>
+                                    <span>@item.LikesInNumbers}K</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@code {
+    private List<CourseCardModel>? courses;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var query = new GraphQLQuery { Query = "{getCourses { id isBestseller imageUri title authors {name} prices {price discount} hours likesInProcent likes}}" };
+        var response = await http.PostAsJsonAsync("http://localhost:7051/api/graphql", query);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                var result = JsonSerializer.Deserialize<DynamicGraphQLResponse>(responseContent);
+
+                if (result != null && result.Data.TryGetProperty("getCourses", out var coursesElement))
+                {
+                    courses = new List<CourseCardModel>();
+
+                    foreach (var course in coursesElement.EnumerateArray())
+                    {
+                        var courseModel = new CourseCardModel();
+
+                        if (course.TryGetProperty("id", out var id))
+                        {
+                            courseModel.Id = id.GetString();
+                        }
+
+                        if (course.TryGetProperty("isBestseller", out var isBestseller))
+                        {
+                            courseModel.IsBestseller = isBestseller.GetBoolean();
+                        }
+
+                        if (course.TryGetProperty("imageUri", out var imageUri))
+                        {
+                            courseModel.ImageUri = imageUri.GetString();
+                        }
+
+                        if (course.TryGetProperty("title", out var title))
+                        {
+                            courseModel.Title = title.GetString();
+                        }
+
+                        if (course.TryGetProperty("authors", out var authors) && authors[0].TryGetProperty("name", out var author))
+                        {
+                            courseModel.Author = author.GetString();
+                        }
+
+                        if (course.TryGetProperty("prices", out var prices))
+                        {
+                            if (prices.TryGetProperty("price", out var price))
+                            {
+                                courseModel.Price = price.GetDouble().ToString();
+                            }
+
+                            if (prices.TryGetProperty("discount", out var discount))
+                            {
+                                courseModel.DiscountPrice = discount.GetDouble().ToString();
+                            }
+                        }
+
+                        if (course.TryGetProperty("hours", out var hours))
+                        {
+                            courseModel.Hours = hours.ToString();
+                        }
+
+                        if (course.TryGetProperty("likesInProcent", out var likesInProcent))
+                        {
+                            courseModel.LikesInProcent = likesInProcent.GetString();
+                        }
+
+                        if (course.TryGetProperty("likes", out var likes))
+                        {
+                            courseModel.LikesInNumbers = likes.GetString();
+                        }
+
+                        courses.Add(courseModel);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while parsing the JSON response: " + ex.Message);
+            }
+        }
+    }
+}
