@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\BlazorWebApp.Business\BlazorWebApp.Business.csproj" />
     <ProjectReference Include="..\BlazorWebApp.Client\BlazorWebApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
@@ -34,7 +35,6 @@
     <None Include="wwwroot\css\scss\core\_variables.scss" />
     <None Include="wwwroot\css\scss\sections\_contact.scss" />
     <None Include="wwwroot\css\scss\sections\_cookiesconsent.scss" />
-    <None Include="wwwroot\css\scss\sections\_courses.scss" />
     <None Include="wwwroot\css\scss\sections\_details.scss" />
     <None Include="wwwroot\css\scss\sections\_detailstest.scss" />
     <None Include="wwwroot\css\scss\sections\_downloads.scss" />
