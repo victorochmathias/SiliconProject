@@ -41,8 +41,13 @@
                             <a href="/account/manage"><img src="/images/..." /></a>
                         </div>
                     </div>
-                    
-                    <button class="btn-gray"><i class="fa-solid fa-arrow-right-to-bracket"></i><span>Sign out</span></button>
+                    <form action="/Logout" method="post">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+                        <button type="submit" class="btn-gray">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i><span>Sign out</span>
+                        </button>
+                    </form>
                 </Authorized>
                 <NotAuthorized>
                     <a href="/account/login" class="btn-gray"><i class="fa-solid fa-arrow-right-to-bracket"></i><span>Sign in</span></a>
@@ -58,20 +63,11 @@
     @using Microsoft.AspNetCore.Authentication
     @using Microsoft.AspNetCore.Authentication.Cookies
 
+
+    private string? currentUrl;
+
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    // private async Task LogOut()
-    // {
-    //     try
-    //     {
-
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         Console.WriteLine($"ERROR::: {ex.Message}");
-    //     }
-
-            
-    // }
+    
 }

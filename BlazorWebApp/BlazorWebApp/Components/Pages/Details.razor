@@ -9,6 +9,7 @@
 
 
 
+
     
     <section class="account-details">
         <div class="container">
@@ -22,7 +23,7 @@
                         </form>
                     </div>
                     <div class="profile-info">
-                        @if (user != null)
+                        @if (user == null)
                         {
                         <p>Loading...</p>
                         }
@@ -84,7 +85,7 @@
                     </div>
                 </EditForm>
 
-                @* <form id="adressinfo-form" method="post" asp-action="Details" asp-controller="Account" onsubmit="return validateAdressForm(event)" novalidate>
+               @*  <form id="adressinfo-form" method="post" asp-action="Details" asp-controller="Account" onsubmit="return validateAdressForm(event)" novalidate>
                 <h5>Adress</h5>
                 <div class="form-adress-content">
                 <div id="adressline_1" class="input-group">
@@ -141,7 +142,7 @@
     }
 
 
-    public async Task OnValidSubmit(EditContext editContext)
+    public void OnValidSubmit(EditContext editContext)
     {
         var userprofile = new BasicInfoFormModel
             {
