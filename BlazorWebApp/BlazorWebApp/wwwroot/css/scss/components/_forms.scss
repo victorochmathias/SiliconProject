@@ -208,4 +208,12 @@ form {
             }
         }
     }
+
+    .validation-message {
+        
+        color: $danger;
+        font-size: 13px;
+        position: absolute;
+        bottom: -21px;
+    }
 }

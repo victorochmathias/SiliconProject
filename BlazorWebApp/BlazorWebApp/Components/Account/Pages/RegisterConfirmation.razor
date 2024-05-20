@@ -1,4 +1,5 @@
 ﻿@page "/Account/RegisterConfirmation"
+@rendermode InteractiveServer
 
 @using System.Text
 @using Microsoft.AspNetCore.Identity
@@ -14,22 +15,35 @@
 
 <h1>Register confirmation</h1>
 
-<StatusMessage Message="@statusMessage" />
 
-@if (emailConfirmationLink is not null)
-{
-    <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
-}
-else
-{
-    <p>Please check your email to confirm your account.</p>
-}
+
+<section id="signup">
+    <div class="container">
+
+        <EditForm FormName="verifycode" Model="VerifyCodeForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
+            <DataAnnotationsValidator />
+
+            <h1>Verify Your Account</h1>
+            
+
+            <div class="content">
+                <div id="form-firstname" class="input-group">
+                    <label>Enter your verification code</label>
+                    <InputText @bind-Value="VerifyCodeForm.Code" />
+                    <ValidationMessage For="() => VerifyCodeForm.Code" />
+                    <p>@statusMessage</p>
+                </div>
+
+                <button id="form-submit" class="btn-theme-s" type="submit">Verify Code</button>
+            </div>
+        </EditForm>
+        <p>Didn't reveive an email? <button @onclick="ResendCode">resend email</button>.</p>
+
+    </div>
+</section>
 
 @code {
-    private string? emailConfirmationLink;
+
     private string? statusMessage;
 
     [CascadingParameter]
@@ -40,6 +54,42 @@ else
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
+
+
+    [SupplyParameterFromForm]
+    private VerifyCodeModel VerifyCodeForm { get; set; } = new VerifyCodeModel();
+
+
+
+    private async Task OnValidSubmit()
+    {
+        var result = await http.PostAsJsonAsync("https://verificationprovider-silicon-backend.azurewebsites.net/api/validate?code=U6-niLiFswlSzJ-SBdZ4QjfvA-oVzbmoHZNbQ3hXRZDBAzFu5f2yBg%3D%3D", new { Email = Email, Code = VerifyCodeForm.Code }); //Lägg till code function url här.
+        if (result.IsSuccessStatusCode)
+        {
+            var user = await UserManager.FindByEmailAsync(Email!);
+            user!.EmailConfirmed = true;
+            await UserManager.UpdateAsync(user);
+        }
+        else
+        {
+            statusMessage = "Invalid code";
+        }
+    }
+
+
+    private async Task ResendCode()
+    {
+        var result = await http.PostAsJsonAsync("", new { Email = Email });
+        if (result.IsSuccessStatusCode)
+        {
+            statusMessage = "Code resent";
+        }
+        else
+        {
+            statusMessage = "Unable to resend code.";
+        }
+    }
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -54,15 +104,15 @@ else
             HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
             statusMessage = "Error finding user for unspecified email";
         }
-        else if (EmailSender is IdentityNoOpEmailSender)
-        {
-            // Once you add a real email sender, you should remove this code that lets you confirm the account
-            var userId = await UserManager.GetUserIdAsync(user);
-            var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            emailConfirmationLink = NavigationManager.GetUriWithQueryParameters(
-                NavigationManager.ToAbsoluteUri("Account/ConfirmEmail").AbsoluteUri,
-                new Dictionary<string, object?> { ["userId"] = userId, ["code"] = code, ["returnUrl"] = ReturnUrl });
-        }
+
     }
+
+
+    public class VerifyCodeModel
+    {
+        [Required]
+        public string Code { get; set; } = "";
+    }
+
+
 }
