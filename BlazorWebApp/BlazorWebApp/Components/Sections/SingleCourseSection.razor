@@ -1,0 +1,225 @@
+﻿@page "/courses/details/{Id}"
+@using BlazorWebApp.Business.Models
+@using System.Text.Json
+@inject HttpClient http
+@inject NavigationManager navigationManager
+
+@attribute [StreamRendering]
+
+@if (course != null)
+{
+    <section class="single-course-page">
+        <div class="top-area">
+            <div class="top-area-content container">
+                <div class="testarlite">
+                    <p class="nav-pages"><i class="fa-regular fa-house"></i> Home <i class="fa-solid fa-angles-right"></i> <span>Courses</span> <i class="fa-solid fa-angles-right"></i> <span>@course.Title</span></p>
+                    <div class="bars">
+                        @if (course.IsBestseller)
+                        {
+                            <div class="best-seller">Best Seller</div>
+                        }
+                        <div class="digital">Digital</div>
+                    </div>
+                    <h2>@course.Title</h2>
+                    <p class="text-description">@course.Ingress</p>
+                    <div class="review-likes-length">
+                        <p class="reviews"><i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> <i class="fa-solid fa-star"></i> (@course.Reviews k reviews)</p>
+                        <p class="likes"><i class="fa-regular fa-thumbs-up"></i> @course.Likes K likes</p>
+                        <p class="course-length"><i class="fa-regular fa-clock"></i> @course.Hours hours</p>
+                    </div>
+                    <div class="creator">
+                        <img class="content-creator" src="@course.ImageUri" alt="" />
+                        <div class="created-by">
+                            <p class="created">Created by</p>
+                            <p class="signature">@course.Authors.FirstOrDefault()?.Name</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="upper-area">
+            <div class="content_1 container">
+                <div class="course-description">
+                    @* <h2>Course Description</h2> *@
+                    @if (!string.IsNullOrEmpty(course.Content?.Description))
+                    {
+                        <p>@((MarkupString)course.Content.Description)</p>
+                    }
+                    <h3>What you'll learn</h3>
+                    @if (course.Content?.Includes != null)
+                    {
+                        @foreach (var item in course.Content.Includes)
+                        {
+                            <div class="icon-and-text">
+                                <div class="circle-with-icon"><i class="fa-solid fa-check"></i></div>
+                                <p>@item</p>
+                            </div>
+                        }
+                    }
+                </div>
+                <form method="post" asp-controller="Account" asp-action="Join" asp-route-id="@course.Id" class="course-card">
+                    <h4>This course includes:</h4>
+                    @if (course.Content?.Includes != null)
+                    {
+                        @foreach (var item in course.Content.Includes)
+                        {
+                            <div class="course-includes">
+                                <i class="fa-regular fa-tv-retro"></i>
+                                <p>@item</p>
+                            </div>
+                        }
+                    }
+                    <div class="prices">
+                        @if (course.Prices?.Discount > 0)
+                        {
+                            <h3>$@course.Prices.Discount</h3>
+                            <h5>$@course.Prices.Price</h5>
+                        }
+                        else
+                        {
+                            <h5 class="no-discountprice">$@course.Prices.Price</h5>
+                        }
+                    </div>
+
+                    <button type="submit" class="btn-theme">Join course</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="lower-area">
+            <div class="content_2 container">
+                <div class="program-details">
+                    <h2>Program Details</h2>
+                    @if (course.Content?.ProgramDetails != null)
+                    {
+                        @foreach (var detail in course.Content.ProgramDetails)
+                        {
+                            <div class="info-detail">
+                                <div class="gray-circle">
+                                    <span>@detail.Id</span>
+                                </div>
+                                <div class="program-information">
+                                    <h3>@detail.Title</h3>
+                                    <p>@detail.Description</p>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+}
+else
+{
+    <p>No course found.</p>
+}
+ 
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private SingleCourseCardModel course;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Id))
+        {
+            var query = new GraphQLQuery
+                {
+                    Query = $@"{{
+                    getCourseById(id: ""{Id}"") {{
+                        id
+                        isBestseller
+                        imageUri
+                        imageHeaderUri
+                        title
+                        ingress
+                        starRating
+                        reviews
+                        likesInProcent
+                        likes
+                        hours
+                        isDigital
+                        authors {{
+                            name
+                        }}
+                        prices {{
+                            currency
+                            price
+                            discount
+                        }}
+                        categories
+                        content {{
+                            description
+                            includes
+                            programDetails {{
+                                id
+                                title
+                                description
+                            }}
+                        }}
+                    }}
+                }}"
+                };
+
+            var response = await http.PostAsJsonAsync("http://localhost:7051/api/graphql", query);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                try
+                {
+                    var result = JsonSerializer.Deserialize<DynamicGraphQLResponse>(responseContent);
+
+                    if (result != null && result.Data.TryGetProperty("getCourseById", out var courseElement))
+                    {
+                        course = new SingleCourseCardModel
+                            {
+                                Id = courseElement.GetProperty("id").GetString(),
+                                IsBestseller = courseElement.GetProperty("isBestseller").GetBoolean(),
+                                ImageUri = courseElement.GetProperty("imageUri").GetString(),
+                                ImageHeaderUri = courseElement.GetProperty("imageHeaderUri").GetString(),
+                                Title = courseElement.GetProperty("title").GetString(),
+                                Ingress = courseElement.GetProperty("ingress").GetString(),
+                                StarRating = courseElement.GetProperty("starRating").GetDecimal(),
+                                Reviews = courseElement.GetProperty("reviews").GetString(),
+                                LikesInProcent = courseElement.GetProperty("likesInProcent").GetString(),
+                                Likes = courseElement.GetProperty("likes").GetString(),
+                                Hours = courseElement.GetProperty("hours").GetString(),
+                                IsDigital = courseElement.GetProperty("isDigital").GetBoolean(),
+                                Authors = courseElement.GetProperty("authors").EnumerateArray().Select(a => new AuthorModel
+                                {
+                                    Name = a.GetProperty("name").GetString()
+                                }).ToList(),
+                                Prices = new PricesModel
+                                {
+                                    Currency = courseElement.GetProperty("prices").GetProperty("currency").GetString(),
+                                    Price = courseElement.GetProperty("prices").GetProperty("price").GetDecimal(),
+                                    Discount = courseElement.GetProperty("prices").GetProperty("discount").GetDecimal()
+                                },
+                                Categories = courseElement.GetProperty("categories").EnumerateArray().Select(c => c.GetString()).ToArray(),
+                                Content = new ContentModel
+                                {
+                                    Description = courseElement.GetProperty("content").GetProperty("description").GetString(),
+                                    Includes = courseElement.GetProperty("content").GetProperty("includes").EnumerateArray().Select(i => i.GetString()).ToArray(),
+                                    ProgramDetails = courseElement.GetProperty("content").GetProperty("programDetails").EnumerateArray().Select(pd => new ProgramDetailItemModel
+                                    {
+                                        Id = pd.GetProperty("id").GetInt32(),
+                                        Title = pd.GetProperty("title").GetString(),
+                                        Description = pd.GetProperty("description").GetString()
+                                    }).ToList()
+                                }
+                            };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while parsing the JSON response: " + ex.Message);
+                }
+            }
+        }
+    }
+}

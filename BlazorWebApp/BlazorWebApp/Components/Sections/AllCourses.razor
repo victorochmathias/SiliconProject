@@ -30,7 +30,7 @@
                 @foreach (var item in courses)
                 {
                     var link = $"courses/details/{item.Id}";
-                    <a href="@link" class="course-link">
+                    <NavLink href="@link" class="course-link">
                     <div class="course">
                         @if (item.IsBestseller)
                         {
@@ -64,7 +64,7 @@
                             </div>
                         </div>
                     </div>
-                    </a>
+                    </NavLink>
                 }
             }
         </div>
