@@ -77,7 +77,7 @@
     protected override async Task OnInitializedAsync()
     {
         var query = new GraphQLQuery { Query = "{getCourses { id isBestseller imageUri title authors {name} prices {price discount} hours likesInProcent likes}}" };
-        var response = await http.PostAsJsonAsync("http://localhost:7051/api/graphql", query);
+        var response = await http.PostAsJsonAsync("https://courseprovider-silicon-backend.azurewebsites.net/api/graphql?", query);
 
         if (response.IsSuccessStatusCode)
         {
