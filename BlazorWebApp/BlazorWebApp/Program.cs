@@ -23,6 +23,7 @@ builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAu
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SubscribeService>();
+builder.Services.AddScoped<NotificationService>();
 
 
 

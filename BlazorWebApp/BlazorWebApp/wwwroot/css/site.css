@@ -3346,6 +3346,12 @@ footer .container span {
   margin: 0;
   color: #9397AD;
 }
+.notifications .container .content .confirm-msg {
+  width: 570px;
+}
+.notifications .container .content .error {
+  width: 570px;
+}
 .notifications .container .content .submit-btns {
   display: flex;
   margin-top: 10rem;

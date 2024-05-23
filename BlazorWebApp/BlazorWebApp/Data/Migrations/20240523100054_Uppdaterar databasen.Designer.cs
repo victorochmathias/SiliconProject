@@ -4,6 +4,7 @@ using BlazorWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorWebApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240523100054_Uppdaterar databasen")]
+    partial class Uppdaterardatabasen
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,50 +98,6 @@ namespace BlazorWebApp.Migrations
                     b.HasIndex("UserProfileId");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("BlazorWebApp.Data.NotificationEntity", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("subscribeStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("useDarkmode")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("NotificationEntities");
-                });
-
-            modelBuilder.Entity("BlazorWebApp.Data.SubscribeEntity", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("AdvertisingUpdates")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("DailyNewletter")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("EventUpdates")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Podcasts")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("StartupsWeekly")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("WeekInReview")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("Subscribers");
                 });
 
             modelBuilder.Entity("BlazorWebApp.Data.UserAddress", b =>

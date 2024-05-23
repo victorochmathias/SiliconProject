@@ -1,8 +1,10 @@
-﻿@page "/notifications"
+﻿@page "/account/notifications"
+@using BlazorWebApp.Models
 
 <section class="notifications">
     <div class="container">
-        <EditForm class="content" FormName="notificationmodel" Model="Input" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
+        <EditForm class="content" FormName="notificationformmodel" Model="Input" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
+            <DataAnnotationsValidator />
             <h2>Notifications</h2>
             <h6>Preferred email for notifications</h6>
             <InputText @bind-Value="Input.Email" autocomplete="email" aria-required="true" placeholder="name@example.com" />
@@ -30,6 +32,18 @@
                     <p>Tortor massa porttitor enim tristique neque fermentum sed.</p>
                 </div>
             </div>
+            @if (!string.IsNullOrEmpty(StatusMessage))
+            {
+                <div class="confirm-msg">
+                    @StatusMessage
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(StatusErrorMessage))
+            {
+                <div class="error-msg">
+                    @StatusErrorMessage
+                </div>
+            }
             <div class="submit-btns">
                 <button type="reset" class="btn-gray">Cancel</button>
                 <button type="submit" class="btn-theme">Save changes</button>
@@ -46,7 +60,7 @@
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private NotificationModel Input { get; set; } = new();
+    private NotificationFormModel Input { get; set; } = new();
 
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
@@ -54,60 +68,168 @@
     [SupplyParameterFromForm]
     public SubscribeFormModel SubscribeForm { get; set; } = new SubscribeFormModel();
 
-    protected override async Task OnInitializedAsync()
-    {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
-        if (user != null && string.IsNullOrEmpty(Input.Email))
-        {
-            Input.Email = user.Email;
-        }
+    [SupplyParameterFromQuery]
+    private string StatusMessage { get; set; } = "";
 
-    }
+    [SupplyParameterFromQuery]
+    private string StatusErrorMessage { get; set; } = "";
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+
+
+    // }
 
 
     public async Task OnValidSubmit(EditContext editContext)
     {
-        if (Input.Email != null)
+        if (Input.subscribeStatus == true && Input.useDarkmode == false)
         {
-            var alreadyExists = await SubscriberService.FindSubscriberByEmail(Input.Email);
-            if (alreadyExists == null)
+            if (!string.IsNullOrEmpty(Input.Email))
             {
-                var newSubscribeEmail = new SubscribeFormModel
+                var alreadyExists = await SubscriberService.FindSubscriberByEmail(Input.Email);
+                if (alreadyExists == null)
+                {
+                    var newSubscribeEmail = new SubscribeFormModel
                     {
-                        Email = Input.Email,
+                            Email = Input.Email,
+                            DailyNewletter = true,
+                            AdvertisingUpdates = false,
+                            WeekInReview = false,
+                            EventUpdates = false,
+                            StartupsWeekly = false,
+                            Podcasts = false
+                    };
+
+                    var result = await http.PostAsJsonAsync("https://4th-newsletterprovider.azurewebsites.net/api/Subscribe?code=HusHjQ5_MmMBRxQDawnweRUw7skMOvTQTLQArWD76aZHAzFun1axhQ%3D%3D", newSubscribeEmail);
+                    StatusMessage = "Subscribed to newletter!";
+
+                }
+
+            }
+            else
+            {
+                var singedInUser = await UserManager.GetUserAsync(HttpContext.User);
+                if (singedInUser != null)
+                {
+                    var userSubscribe = new SubscribeFormModel
+                        {
+                            Email = singedInUser.Email,
+                            DailyNewletter = true,
+                            AdvertisingUpdates = false,
+                            WeekInReview = false,
+                            EventUpdates = false,
+                            StartupsWeekly = false,
+                            Podcasts = false
+                        };
+
+                    var apiResult = await http.PostAsJsonAsync("https://4th-newsletterprovider.azurewebsites.net/api/Subscribe?code=HusHjQ5_MmMBRxQDawnweRUw7skMOvTQTLQArWD76aZHAzFun1axhQ%3D%3D", userSubscribe);
+
+
+                }
+
+
+
+            }
+        }
+        else if (Input.subscribeStatus == false && Input.useDarkmode == true)
+        {
+
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                var model = new NotificationModel
+                    {
+                        Email = user.Email,
+                        subscribeStatus = Input.subscribeStatus,
+                        useDarkmode = Input.useDarkmode
+                    };
+
+                var result = await notificationService.CreateNotificationEntity(model);
+
+
+                StatusMessage = "Dark and light mode-switch successfully removed.";
+            }
+
+
+
+        }
+
+
+
+    }
+
+
+    private async Task HandleInvalidSubmit()
+    {
+        // StatusErrorMessage = "Enter a valid email address and choose an action";
+
+
+        if (Input.subscribeStatus == false && Input.useDarkmode == true)
+        {
+
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                var model = new NotificationModel
+                    {
+                        Email = user.Email,
+                        subscribeStatus = Input.subscribeStatus,
+                        useDarkmode = Input.useDarkmode
+                    };
+
+                var result = await notificationService.CreateNotificationEntity(model);
+                StatusMessage = "Dark and light mode-switch successfully removed.";
+            }
+
+
+
+        }
+        else if (Input.subscribeStatus == true && Input.useDarkmode == true && string.IsNullOrEmpty(Input.Email))
+        {
+            var user = await UserManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                var model = new NotificationModel
+                    {
+                        Email = user.Email,
+                        subscribeStatus = Input.subscribeStatus,
+                        useDarkmode = Input.useDarkmode
+                    };
+
+                var result = await notificationService.CreateNotificationEntity(model);
+
+
+
+
+                var userSubscribe = new SubscribeFormModel
+                    {
+                        Email = user.Email,
                         DailyNewletter = true,
                         AdvertisingUpdates = false,
                         WeekInReview = false,
                         EventUpdates = false,
                         StartupsWeekly = false,
                         Podcasts = false
-            };
+                    };
 
-                var result = await http.PostAsJsonAsync("https://4th-newsletterprovider.azurewebsites.net/api/Subscribe?code=HusHjQ5_MmMBRxQDawnweRUw7skMOvTQTLQArWD76aZHAzFun1axhQ%3D%3D", SubscribeForm);
-                
+                var apiResult = await http.PostAsJsonAsync("https://4th-newsletterprovider.azurewebsites.net/api/Subscribe?code=HusHjQ5_MmMBRxQDawnweRUw7skMOvTQTLQArWD76aZHAzFun1axhQ%3D%3D", userSubscribe);
 
-            }
-            else
-            {
-                //statusmessage användaren finns redan. 
+
+
+
+                StatusMessage = "You are now subscribed. Dark and light mode-switch successfully removed.";
             }
         }
     }
 
 
-
-
-
-
-
-
-
-
-    private sealed class NotificationModel
+    private sealed class NotificationFormModel
     {
 
         [EmailAddress]
-        public string Email { get; set; } = "";
+        public string? Email { get; set; }
 
         public bool subscribeStatus { get; set; } = false;
 
