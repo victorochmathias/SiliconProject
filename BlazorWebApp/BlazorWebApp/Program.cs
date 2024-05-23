@@ -22,6 +22,8 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<SubscribeService>();
+builder.Services.AddScoped<NotificationService>();
 
 
 
