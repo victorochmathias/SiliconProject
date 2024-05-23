@@ -1,0 +1,134 @@
+﻿@page "/notifications"
+
+<section class="notifications">
+    <div class="container">
+        <EditForm class="content" FormName="notificationmodel" Model="Input" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
+            <h2>Notifications</h2>
+            <h6>Preferred email for notifications</h6>
+            <InputText @bind-Value="Input.Email" autocomplete="email" aria-required="true" placeholder="name@example.com" />
+            <div class="newslettersub">
+                <div class="btn-switch-notification">
+                    <label class="switch" for="switch-mode-notification">
+                        <InputCheckbox id="switch-mode-notification" @bind-Value="Input.subscribeStatus" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="sub-topic-and-info">
+                    <h6>Subscribe to Newsletter</h6>
+                    <p>Nec, posuere non felis duis massa vitae aliquet interdum scelerisque. Neque ullamcorper.</p>
+                </div>
+            </div>
+            <div class="dark-light-mode-setting">
+                <div class="btn-switch-notification">
+                    <label class="switch" for="switch-mode-darkmode">
+                        <InputCheckbox id="switch-mode-darkmode" @bind-Value="Input.useDarkmode" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="darkmode-topic">
+                    <h6>Use Dark Mode Theme in Application</h6>
+                    <p>Tortor massa porttitor enim tristique neque fermentum sed.</p>
+                </div>
+            </div>
+            <div class="submit-btns">
+                <button type="reset" class="btn-gray">Cancel</button>
+                <button type="submit" class="btn-theme">Save changes</button>
+            </div>
+        </EditForm>
+    </div>
+</section>
+
+@code {
+
+    private ApplicationUser user = default!;
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [SupplyParameterFromForm]
+    private NotificationModel Input { get; set; } = new();
+
+    [SupplyParameterFromQuery]
+    private string? ReturnUrl { get; set; }
+
+    [SupplyParameterFromForm]
+    public SubscribeFormModel SubscribeForm { get; set; } = new SubscribeFormModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
+        if (user != null && string.IsNullOrEmpty(Input.Email))
+        {
+            Input.Email = user.Email;
+        }
+
+    }
+
+
+    public async Task OnValidSubmit(EditContext editContext)
+    {
+        if (Input.Email != null)
+        {
+            var alreadyExists = await SubscriberService.FindSubscriberByEmail(Input.Email);
+            if (alreadyExists == null)
+            {
+                var newSubscribeEmail = new SubscribeFormModel
+                    {
+                        Email = Input.Email,
+                        DailyNewletter = true,
+                        AdvertisingUpdates = false,
+                        WeekInReview = false,
+                        EventUpdates = false,
+                        StartupsWeekly = false,
+                        Podcasts = false
+            };
+
+                var result = await http.PostAsJsonAsync("https://4th-newsletterprovider.azurewebsites.net/api/Subscribe?code=HusHjQ5_MmMBRxQDawnweRUw7skMOvTQTLQArWD76aZHAzFun1axhQ%3D%3D", SubscribeForm);
+                
+
+            }
+            else
+            {
+                //statusmessage användaren finns redan. 
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    private sealed class NotificationModel
+    {
+
+        [EmailAddress]
+        public string Email { get; set; } = "";
+
+        public bool subscribeStatus { get; set; } = false;
+
+        public bool useDarkmode { get; set; } = false;
+    }
+
+    public class SubscribeFormModel
+    {
+
+        [EmailAddress]
+        public string Email { get; set; } = null!;
+        public bool DailyNewletter { get; set; }
+        public bool AdvertisingUpdates { get; set; }
+        public bool WeekInReview { get; set; }
+        public bool EventUpdates { get; set; }
+        public bool StartupsWeekly { get; set; }
+        public bool Podcasts { get; set; }
+
+    }
+
+
+
+
+}
