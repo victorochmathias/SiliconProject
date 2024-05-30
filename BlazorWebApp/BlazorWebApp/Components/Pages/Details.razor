@@ -3,126 +3,81 @@
 @using BlazorWebApp.Services
 
 @inject SignInManager<ApplicationUser> SignInManager
+@inject IServiceProvider ServiceProvider
 @attribute [StreamRendering]
 
-
-
-
-
-
-    
-    <section class="account-details">
-        <div class="container">
-            <aside>
-                <div class="profile">
-                    <div class="profile-image">
-                        <img src="/images/profile-image.svg" alt="" />
-                        <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
-                            <input id="uploadFile" type="file" name="file" hidden />
-                            <label for="uploadFile" class="btn-white-circle"><i class="fa-regular fa-refresh"></i></label>
-                        </form>
-                    </div>
-                    <div class="profile-info">
-                        @if (user == null)
-                        {
+<section class="account-details">
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="profile-image">
+                    <img src="/images/profile-image.svg" alt="" />
+                    <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
+                        <input id="uploadFile" type="file" name="file" hidden />
+                        <label for="uploadFile" class="btn-white-circle"><i class="fa-regular fa-refresh"></i></label>
+                    </form>
+                </div>
+                <div class="profile-info">
+                    @if (user == null)
+                    {
                         <p>Loading...</p>
-                        }
-                        else
-                        {
-                            <h3>@userProfile.FirstName @userProfile.LastName</h3>
-                            <p>@user.Email</p>
-                        }
-                    
-                    </div>
+                    }
+                    else
+                    {
+                        <h3>@userProfile.FirstName @userProfile.LastName</h3>
+                        <p>@user.Email</p>
+                    }
                 </div>
-                <nav>
-                    <NavLink id="nav-settings" class="btn-nav" href="/account/details"><i class="fa-regular fa-gear"></i><span>Account Details</span></NavLink>
-                    <NavLink id="nav-security" class="btn-nav" href="/account/security"><i class="fa-regular fa-lock"></i><span>Security</span></NavLink>
-                    <NavLink id="nav-bookmark" class="btn-nav" href="/account/savedcourses"><i class="fa-regular fa-bookmark"></i><span>Saved Courses</span></NavLink>
-                    <NavLink id="nav-signout" class="btn-nav" href="#"><i class="fa-regular fa-arrow-right-from-bracket"></i><span>Sign Out</span></NavLink>
-
-                </nav>
-            </aside>
-            <div class="account-information">
-                <EditForm class="basicinfo-form" FormName="basicinfoform" Model="BasicInfoForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
-                    <DataAnnotationsValidator />
-                    <h1>Account Details</h1>
-                    <h5>Basic Info</h5>
-                    <div class="form-content">
-                        <div id="form-firstname" class="input-group">
-                            <label>First name</label>
-                            <ValidationMessage For="() => BasicInfoForm.FirstName" />
-                            <InputText @bind-Value="BasicInfoForm.FirstName" />
-
-                        </div>
-                        <div id="form-lastname" class="input-group">
-                            <label>Last name</label>
-                            <ValidationMessage For="() => BasicInfoForm.LastName" />
-                            <InputText @bind-Value="BasicInfoForm.LastName" />
-
-
-                        </div>
-                        <div id="form-email" class="input-group">
-                            <label>Email</label>
-                            <ValidationMessage For="() => BasicInfoForm.Email" />
-                            <InputText @bind-Value="BasicInfoForm.Email" />
-
-                        </div>
-                        <div id="form-phone" class="input-group">
-                            <label>Phone number</label>
-                            <ValidationMessage For="() => BasicInfoForm.PhoneNumber" />
-                            <InputText @bind-Value="BasicInfoForm.PhoneNumber" />
-                        </div>
-                        <div id="form-bio" class="input-group">
-                            <label>Bio</label>
-                            <textarea @bind="BasicInfoForm.Biography" placeholder="Enter text here"></textarea>
-                            <ValidationMessage For="() => BasicInfoForm.Biography" />
-                        </div>
-                        <div class="my-buttons">
-                            <button id="btn-info-reset" class="btn-gray" type="reset">Cancel</button>
-                            <button id="btn-info-submit" class="btn-theme" type="submit">Save changes</button>
-                        </div>
-                    </div>
-                </EditForm>
-
-               @*  <form id="adressinfo-form" method="post" asp-action="Details" asp-controller="Account" onsubmit="return validateAdressForm(event)" novalidate>
-                <h5>Adress</h5>
-                <div class="form-adress-content">
-                <div id="adressline_1" class="input-group">
-                <label asp-for="AdressInfoForm.AdressLine_1"></label>
-                <input class="required-field-adress" asp-for="AdressInfoForm.AdressLine_1" />
-                <span asp-validation-for="AdressInfoForm.AdressLine_1"></span>
-                </div>
-                <div id="adressline_2" class="input-group">
-                <label asp-for="AdressInfoForm.AdressLine_2"></label>
-                <input asp-for="AdressInfoForm.AdressLine_2" />
-                <span asp-validation-for="AdressInfoForm.AdressLine_2"></span>
-                </div>
-                <div id="postalcode" class="input-group">
-                <label asp-for="AdressInfoForm.PostalCode"></label>
-                <input class="required-field-adress" asp-for="AdressInfoForm.PostalCode" />
-                <span asp-validation-for="AdressInfoForm.PostalCode"></span>
-                </div>
-                <div id="city" class="input-group">
-                <label asp-for="AdressInfoForm.City"></label>
-                <input class="required-field-adress" asp-for="AdressInfoForm.City" />
-                <span asp-validation-for="AdressInfoForm.City"></span>
-                </div>
-
-                <div class="my-buttons">
-                <button id="btn-adress-reset" class="btn-gray" type="reset">Cancel</button>
-                <button id="btn-adress-submit" class="btn-theme" type="submit">Save changes</button>
-                </div>
-                </div>
-                </form> *@
             </div>
+            <nav>
+                <NavLink id="nav-settings" class="btn-nav" href="/account/details"><i class="fa-regular fa-gear"></i><span>Account Details</span></NavLink>
+                <NavLink id="nav-security" class="btn-nav" href="/account/security"><i class="fa-regular fa-lock"></i><span>Security</span></NavLink>
+                <NavLink id="nav-bookmark" class="btn-nav" href="/account/savedcourses"><i class="fa-regular fa-bookmark"></i><span>Saved Courses</span></NavLink>
+                <NavLink id="nav-signout" class="btn-nav" href="#"><i class="fa-regular fa-arrow-right-from-bracket"></i><span>Sign Out</span></NavLink>
+            </nav>
+        </aside>
+        <div class="account-information">
+            <EditForm class="basicinfo-form" FormName="basicinfoform" Model="BasicInfoForm" OnValidSubmit="OnValidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
+                <DataAnnotationsValidator />
+                <h1>Account Details</h1>
+                <h5>Basic Info</h5>
+                <div class="form-content">
+                    <div id="form-firstname" class="input-group">
+                        <label>First name</label>
+                        <ValidationMessage For="() => BasicInfoForm.FirstName" />
+                        <InputText @bind-Value="BasicInfoForm.FirstName" />
+                    </div>
+                    <div id="form-lastname" class="input-group">
+                        <label>Last name</label>
+                        <ValidationMessage For="() => BasicInfoForm.LastName" />
+                        <InputText @bind-Value="BasicInfoForm.LastName" />
+                    </div>
+                    <div id="form-email" class="input-group">
+                        <label>Email</label>
+                        <ValidationMessage For="() => BasicInfoForm.Email" />
+                        <InputText @bind-Value="BasicInfoForm.Email" />
+                    </div>
+                    <div id="form-phone" class="input-group">
+                        <label>Phone number</label>
+                        <ValidationMessage For="() => BasicInfoForm.PhoneNumber" />
+                        <InputText @bind-Value="BasicInfoForm.PhoneNumber" />
+                    </div>
+                    <div id="form-bio" class="input-group">
+                        <label>Bio</label>
+                        <textarea @bind="BasicInfoForm.Biography" placeholder="Enter text here"></textarea>
+                        <ValidationMessage For="() => BasicInfoForm.Biography" />
+                    </div>
+                    <div class="my-buttons">
+                        <button id="btn-info-reset" class="btn-gray" type="reset">Cancel</button>
+                        <button id="btn-info-submit" class="btn-theme" type="submit">Save changes</button>
+                    </div>
+                </div>
+            </EditForm>
         </div>
-    </section>
-    
-     
+    </div>
+</section>
 
 @code {
-
     private ApplicationUser user = default!;
     private UserProfile userProfile = default!;
 
@@ -137,10 +92,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserManager.GetUserAsync(HttpContext.User) ?? null!;
-        userProfile = await UserService.GetUserProfileAsync(user.UserProfileId!);
-    }
+        using (var scope = ServiceProvider.CreateScope())
+        {
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var userService = scope.ServiceProvider.GetRequiredService<UserService>();
 
+            user = await userManager.GetUserAsync(HttpContext.User) ?? null!;
+            userProfile = await userService.GetUserProfileAsync(user.UserProfileId!);
+        }
+    }
 
     public void OnValidSubmit(EditContext editContext)
     {
@@ -152,49 +112,35 @@
                 PhoneNumber = BasicInfoForm.PhoneNumber,
                 Biography = BasicInfoForm.Biography
             };
-       
 
         //uppdatera användaren på något vis.....
-
     }
-
-
 
     public class BasicInfoFormModel
     {
         public string UserId { get; set; } = null!;
-
 
         [Required(ErrorMessage = "A valid first name is required")]
         [DataType(DataType.Text)]
         [Display(Name = "First name", Prompt = "Enter your first name")]
         public string FirstName { get; set; } = null!;
 
-
-
         [Required(ErrorMessage = "A valid last name is required")]
         [DataType(DataType.Text)]
         [Display(Name = "Last name", Prompt = "Enter your last name")]
         public string LastName { get; set; } = null!;
 
-
-        [Required(ErrorMessage = "An valid email is required")]
+        [Required(ErrorMessage = "A valid email is required")]
         [DataType(DataType.EmailAddress)]
         [Display(Name = "Email", Prompt = "Enter your email")]
         public string Email { get; set; } = null!;
-
-
 
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Phone (optional)", Prompt = "Enter your phone number")]
         public string? PhoneNumber { get; set; }
 
-
-
-
         [DataType(DataType.MultilineText)]
         [Display(Name = "Bio (optional)", Prompt = "Add a short bio...)")]
         public string? Biography { get; set; }
     }
-    
 }
