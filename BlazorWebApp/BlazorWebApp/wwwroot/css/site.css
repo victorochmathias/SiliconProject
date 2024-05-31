@@ -1549,7 +1549,6 @@ footer .container span {
   display: flex;
   gap: 2%;
   margin-top: 0.5rem;
-  height: 45px;
 }
 .account-details .container .account-information #adressinfo-form .form-adress-content .my-buttons #btn-adress-reset {
   grid-area: btn-adress-reset;
@@ -1558,7 +1557,6 @@ footer .container span {
 @media (min-width: 768px) {
   .account-details .container .account-information #adressinfo-form .form-adress-content .my-buttons #btn-adress-reset {
     width: 6rem;
-
   }
 }
 .account-details .container .account-information #adressinfo-form .form-adress-content .my-buttons #btn-adress-submit {
@@ -2079,7 +2077,7 @@ footer .container span {
 }
 @media (min-width: 992px) {
   .security .container aside {
-    width: 20rem;
+    width: 7rem;
     padding-right: 2rem;
     border-right: 1px solid var(--color-gray-400) !important;
   }

@@ -83,7 +83,9 @@
                 LastName = SignUpForm.LastName
             },
             UserName = SignUpForm.Email,
-            Email = SignUpForm.Email
+            Email = SignUpForm.Email,
+            EmailConfirmed = true
+            
         };
 
         try
@@ -109,12 +111,12 @@
             return;
         }
 
-        var resultasdf = await http.PostAsJsonAsync("https://verificationprovider-silicon-backend.azurewebsites.net/api/validate?code=cSobmi3A3Hy2A3etTkZfFS8d16i5evEARlZkWuwY9dxAAzFuV1Avcg%3D%3D", SignUpForm); //lägg till confirmation email url'en här!!
+        /* var resultasdf = await http.PostAsJsonAsync("https://verificationprovider-silicon-backend.azurewebsites.net/api/validate?code=cSobmi3A3Hy2A3etTkZfFS8d16i5evEARlZkWuwY9dxAAzFuV1Avcg%3D%3D", SignUpForm); */ //lägg till confirmation email url'en här!!
 
 
         if (UserManager.Options.SignIn.RequireConfirmedAccount)
         {
-            RedirectManager.RedirectTo("Account/RegisterConfirmation", new() { ["email"] = user.Email, ["returnUrl"] = ReturnUrl });
+            RedirectManager.RedirectTo("/account/login"); //Gör på detta vis för att providern ovan ej fungerar /victor
         }
 
         await SignInManager.SignInAsync(user, isPersistent: false);
