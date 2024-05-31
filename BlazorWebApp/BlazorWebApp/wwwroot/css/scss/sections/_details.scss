@@ -384,6 +384,7 @@
 
                             @include md {
                                 width: 6rem;
+
                             }
                         }
 
@@ -391,8 +392,10 @@
                             grid-area: btn-adress-submit;
                             width: 100%;
 
+
                             @include md {
                                 width: 9rem;
+
                             }
                         }
                     }
