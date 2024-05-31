@@ -3313,6 +3313,102 @@ footer .container span {
 .notifications {
   padding-top: 3rem;
 }
+.notifications .container {
+  display: grid !important;
+  grid-template-columns: 2fr 5fr;
+  gap: 150px;
+  margin-bottom: 70px;
+}
+.notifications .container aside {
+  border-right: 1px solid #E2E5F1;
+  padding-right: 20px;
+}
+.notifications .container aside .profile {
+  margin: 20px;
+  text-align: center;
+}
+.notifications .container aside .profile .profile-pic {
+  position: relative;
+}
+.notifications .container aside .profile .profile-pic img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+.notifications .container aside .profile .profile-pic .btn {
+  position: absolute;
+  top: 80px;
+  left: calc(50% - 18px);
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 101, 241, 0.0784313725);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.notifications .container aside .profile h5 {
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+.notifications .container aside .profile p {
+  line-height: 160%;
+  font-weight: 400;
+  color: #565973;
+  font-family: "Manrope", sans-serif;
+  font-size: 16px !important;
+}
+.notifications .container aside nav {
+  display: block;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+.notifications .container aside nav .btn-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-gray-800) !important;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+.notifications .container aside nav .btn-nav i {
+  color: var(--color-gray-600) !important;
+  margin-right: 1rem;
+}
+.notifications .container aside nav .btn-nav:hover {
+  background-color: var(--color-gray-200) !important;
+}
+@media (min-width: 992px) {
+  .notifications .container aside nav .btn-nav {
+    justify-content: start;
+    width: auto;
+    padding: 10px 20px;
+  }
+  .notifications .container aside nav .btn-nav i {
+    margin-left: 2rem;
+    margin-right: 1rem;
+  }
+}
+.notifications .container aside nav .btn-nav #nav-settings span, .notifications .container aside nav .btn-nav #nav-security span, .notifications .container aside nav .btn-nav #nav-bookmark span, .notifications .container aside nav .btn-nav #nav-signout span {
+  display: none;
+}
+@media (min-width: 992px) {
+  .notifications .container aside nav .btn-nav #nav-settings span, .notifications .container aside nav .btn-nav #nav-security span, .notifications .container aside nav .btn-nav #nav-bookmark span, .notifications .container aside nav .btn-nav #nav-signout span {
+    display: block;
+  }
+}
+@media (min-width: 992px) {
+  .notifications .container aside nav .btn-nav #nav-settings, .notifications .container aside nav .btn-nav #nav-security, .notifications .container aside nav .btn-nav #nav-bookmark, .notifications .container aside nav .btn-nav #nav-signout {
+    justify-content: start;
+  }
+}
 .notifications .container .content h2 {
   margin-bottom: 2rem;
 }

@@ -3,6 +3,24 @@
 
 <section class="notifications">
     <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="profile-image">
+                    <img src="/images/profile-image.svg" alt="Profile Image" />
+                    <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
+                        <input id="uploadFile" type="file" name="file" hidden />
+                        <label for="uploadFile" class="btn-white-circle"><i class="fa-regular fa-refresh"></i></label>
+                    </form>
+                </div>
+            </div>
+            <nav>
+                <NavLink id="nav-settings" class="btn-nav" href="/account/details"><i class="fa-regular fa-gear"></i><span>Account Details</span></NavLink>
+                <NavLink id="nav-security" class="btn-nav" href="/account/security"><i class="fa-regular fa-lock"></i><span>Security</span></NavLink>
+                <NavLink id="nav-notifications" class="btn-nav" href="/account/notifications"><i class="fa-regular fa-bell"></i><span>Notifications</span></NavLink>
+                <NavLink id="nav-bookmark" class="btn-nav" href="/account/savedcourses"><i class="fa-regular fa-bookmark"></i><span>Saved Courses</span></NavLink>
+                <NavLink id="nav-signout" class="btn-nav" href="/account/logout"><i class="fa-regular fa-arrow-right-from-bracket"></i><span>Sign Out</span></NavLink>
+            </nav>
+        </aside>
         <EditForm class="content" FormName="notificationformmodel" Model="Input" OnValidSubmit="OnValidSubmit" OnInvalidSubmit="HandleInvalidSubmit" asp-route-returnUrl="@ReturnUrl" method="post" novalidate>
             <DataAnnotationsValidator />
             <h2>Notifications</h2>
