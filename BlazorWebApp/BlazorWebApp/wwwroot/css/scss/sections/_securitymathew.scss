@@ -1,0 +1,219 @@
+.security-details {
+    .container {
+        display: grid;
+        grid-template-columns: 1fr;
+
+        @include md {
+            display: grid;
+            grid-template-columns: 2fr 5fr;
+        }
+
+        gap: 150px;
+        margin-bottom: 70px;
+
+        aside {
+            border-right: 1px solid $gray-300;
+            padding-right: 20px;
+
+            .profile {
+                margin: 20px;
+                text-align: center;
+
+                .profile-pic {
+                    position: relative;
+
+                    img {
+                        border-radius: 50%;
+                        width: 120px;
+                        height: 120px;
+                        object-fit: cover;
+                    }
+
+                    .btn {
+                        position: absolute;
+                        top: 80px;
+                        left: calc(50% - 18px);
+                        background-color: white;
+                        border-radius: 50%;
+                        border: 1px solid $theme-opacity;
+                        width: 36px;
+                        height: 36px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+
+                h5 {
+                    margin-top: 15px;
+                    margin-bottom: 0;
+                }
+
+                p {
+                    @include text-m;
+                }
+            }
+
+            nav {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 2rem;
+
+                .btn-nav {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-decoration: none;
+                    color: var(--color-gray-800) !important;
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                    border-radius: 6px;
+                    transition: background-color 0.3s ease;
+
+                    i {
+                        color: var(--color-gray-600) !important;
+                        margin-right: 1rem;
+                    }
+
+                    &:hover {
+                        background-color: var(--color-gray-200) !important;
+                    }
+
+                    @include lg {
+                        justify-content: start;
+                        width: auto;
+                        padding: 10px 20px;
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+
+                    #nav-settings, #nav-security, #nav-bookmark, #nav-signout {
+                        span {
+                            display: none;
+
+                            @include lg {
+                                display: block;
+                            }
+                        }
+
+                        @include lg {
+                            justify-content: start;
+                        }
+                    }
+                }
+            }
+        }
+
+        .details {
+            margin-top: 50px;
+            width: 100%;
+
+            .change-password {
+                h2 {
+                    color: $theme;
+                }
+
+                form {
+                    h5 {
+                        color: $theme;
+                    }
+
+                    .content {
+                        display: grid;
+                        gap: 1rem 2rem;
+                        grid-template-columns: 1fr 1fr;
+                        grid-template-areas:
+                            "current current" "new confirm" "buttons buttons";
+
+                        #form-current-password {
+                            grid-area: current;
+                        }
+
+                        #form-new-password {
+                            grid-area: new;
+                        }
+
+                        #form-confirm-new-password {
+                            grid-area: confirm;
+                        }
+
+                        .form-buttons {
+                            grid-area: buttons;
+                            margin: 20px 0;
+                            display: flex;
+                            gap: 20px;
+
+                            button {
+                                padding: 10px 20px;
+                                font-size: 1rem;
+                            }
+                        }
+
+                        .input-group {
+                            display: flex;
+                            flex-direction: column;
+
+                            label {
+                                font-weight: 600;
+                                margin-bottom: 5px;
+                            }
+
+                            .form-control {
+                                padding: 10px;
+                                font-size: 1rem;
+                                border: 1px solid var(--color-gray-300);
+                                border-radius: 5px;
+                                width: 100%;
+                            }
+
+                            .validation-message {
+                                color: red;
+                                margin-top: 5px;
+                                font-size: 0.875rem;
+                            }
+                        }
+                    }
+                }
+            }
+
+            .delete-account {
+                h5 {
+                    color: $theme;
+                }
+
+                .checkbox {
+                    padding-top: 30px;
+                    padding-bottom: 30px;
+
+                    input[type="checkbox"] {
+                        transform: scale(1.5);
+                        margin-right: 10px;
+
+                        &:checked {
+                            background-color: blue;
+                        }
+                    }
+                }
+
+                #form-button {
+                    background-color: red;
+                    color: white;
+                    padding: 10px 20px;
+                    font-size: 1rem;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background-color: darkred;
+                    }
+                }
+            }
+        }
+    }
+}
