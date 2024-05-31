@@ -72,6 +72,18 @@
                         <button id="btn-info-reset" class="btn-gray" type="reset">Cancel</button>
                         <button id="btn-info-submit" class="btn-theme" type="submit">Save changes</button>
                     </div>
+                    @if (!string.IsNullOrEmpty(StatusMessage))
+                    {
+                        <div class="confirm-msg">
+                            @StatusMessage
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(ErrorStatusMessage))
+                    {
+                        <div class="error-msg">
+                            @ErrorStatusMessage
+                        </div>
+                    }
                 </div>
             </EditForm>
         </div>
@@ -81,6 +93,12 @@
 @code {
     private ApplicationUser user = default!;
     private UserProfile userProfile = default!;
+
+    [SupplyParameterFromQuery]
+    private string StatusMessage { get; set; } = "";
+
+    [SupplyParameterFromQuery]
+    private string ErrorStatusMessage { get; set; } = "";
 
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
@@ -103,7 +121,7 @@
         }
     }
 
-    public void OnValidSubmit(EditContext editContext)
+    public async Task OnValidSubmit(EditContext editContext)
     {
         var userprofile = new BasicInfoFormModel
             {
@@ -113,6 +131,12 @@
                 PhoneNumber = BasicInfoForm.PhoneNumber,
                 Biography = BasicInfoForm.Biography
             };
+
+        var result = await UserService.UpdateUserDetailsAsync(user.Id, userprofile);
+        if (result)
+            StatusMessage = "User successfully updated.";
+        else 
+            ErrorStatusMessage = "Error, please try again.";
 
         //uppdatera användaren på något vis.....
     }
