@@ -2,6 +2,108 @@
     padding-top: 3rem;
 
     .container {
+        display: grid !important;
+        grid-template-columns: 2fr 5fr;
+        gap: 150px;
+        margin-bottom: 70px;
+
+        aside {
+            border-right: 1px solid $gray-300;
+            padding-right: 20px;
+
+            .profile {
+                margin: 20px;
+                text-align: center;
+
+                .profile-pic {
+                    position: relative;
+
+                    img {
+                        border-radius: 50%;
+                        width: 120px;
+                        height: 120px;
+                        object-fit: cover;
+                    }
+
+                    .btn {
+                        position: absolute;
+                        top: 80px;
+                        left: calc(50% - 18px);
+                        background-color: white;
+                        border-radius: 50%;
+                        border: 1px solid $theme-opacity;
+                        width: 36px;
+                        height: 36px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+                }
+
+                h5 {
+                    margin-top: 15px;
+                    margin-bottom: 0;
+                }
+
+                p {
+                    @include text-m;
+                }
+            }
+
+            nav {
+                display: block;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 2rem;
+
+                .btn-nav {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    text-decoration: none;
+                    color: var(--color-gray-800) !important;
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                    border-radius: 6px;
+                    transition: background-color 0.3s ease;
+
+                    i {
+                        color: var(--color-gray-600) !important;
+                        margin-right: 1rem;
+                    }
+
+                    &:hover {
+                        background-color: var(--color-gray-200) !important;
+                    }
+
+                    @include lg {
+                        justify-content: start;
+                        width: auto;
+                        padding: 10px 20px;
+
+                        i {
+                            margin-left: 2rem;
+                            margin-right: 1rem;
+                        }
+                    }
+
+                    #nav-settings, #nav-security, #nav-bookmark, #nav-signout {
+                        span {
+                            display: none;
+
+                            @include lg {
+                                display: block;
+                            }
+                        }
+
+                        @include lg {
+                            justify-content: start;
+                        }
+                    }
+                }
+            }
+        }
 
         .content {
 
