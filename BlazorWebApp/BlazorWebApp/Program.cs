@@ -21,6 +21,7 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+builder.Services.AddScoped<UserManager<ApplicationUser>>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<SubscribeService>();
 builder.Services.AddScoped<NotificationService>();
@@ -49,6 +50,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
+    .AddUserManager<UserManager<ApplicationUser>>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();

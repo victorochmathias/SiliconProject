@@ -3425,3 +3425,187 @@ footer .container span {
 .btn-switch-notification .switch .slider.round:before {
   border-radius: 50%;
 }
+
+.security-details .container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 150px;
+  margin-bottom: 70px;
+}
+@media (min-width: 768px) {
+  .security-details .container {
+    display: grid;
+    grid-template-columns: 2fr 5fr;
+  }
+}
+.security-details .container aside {
+  border-right: 1px solid #E2E5F1;
+  padding-right: 20px;
+}
+.security-details .container aside .profile {
+  margin: 20px;
+  text-align: center;
+}
+.security-details .container aside .profile .profile-pic {
+  position: relative;
+}
+.security-details .container aside .profile .profile-pic img {
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+.security-details .container aside .profile .profile-pic .btn {
+  position: absolute;
+  top: 80px;
+  left: calc(50% - 18px);
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid rgba(99, 101, 241, 0.0784313725);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.security-details .container aside .profile h5 {
+  margin-top: 15px;
+  margin-bottom: 0;
+}
+.security-details .container aside .profile p {
+  line-height: 160%;
+  font-weight: 400;
+  color: #565973;
+  font-family: "Manrope", sans-serif;
+  font-size: 16px !important;
+}
+.security-details .container aside nav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 2rem;
+}
+.security-details .container aside nav .btn-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: var(--color-gray-800) !important;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+.security-details .container aside nav .btn-nav i {
+  color: var(--color-gray-600) !important;
+  margin-right: 1rem;
+}
+.security-details .container aside nav .btn-nav:hover {
+  background-color: var(--color-gray-200) !important;
+}
+@media (min-width: 992px) {
+  .security-details .container aside nav .btn-nav {
+    justify-content: start;
+    width: auto;
+    padding: 10px 20px;
+  }
+  .security-details .container aside nav .btn-nav i {
+    margin-left: 2rem;
+    margin-right: 1rem;
+  }
+}
+.security-details .container aside nav .btn-nav #nav-settings span, .security-details .container aside nav .btn-nav #nav-security span, .security-details .container aside nav .btn-nav #nav-bookmark span, .security-details .container aside nav .btn-nav #nav-signout span {
+  display: none;
+}
+@media (min-width: 992px) {
+  .security-details .container aside nav .btn-nav #nav-settings span, .security-details .container aside nav .btn-nav #nav-security span, .security-details .container aside nav .btn-nav #nav-bookmark span, .security-details .container aside nav .btn-nav #nav-signout span {
+    display: block;
+  }
+}
+@media (min-width: 992px) {
+  .security-details .container aside nav .btn-nav #nav-settings, .security-details .container aside nav .btn-nav #nav-security, .security-details .container aside nav .btn-nav #nav-bookmark, .security-details .container aside nav .btn-nav #nav-signout {
+    justify-content: start;
+  }
+}
+.security-details .container .details {
+  margin-top: 50px;
+  width: 100%;
+}
+.security-details .container .details .change-password h2 {
+  color: #6366F1;
+}
+.security-details .container .details .change-password form h5 {
+  color: #6366F1;
+}
+.security-details .container .details .change-password form .content {
+  display: grid;
+  gap: 1rem 2rem;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas: "current current" "new confirm" "buttons buttons";
+}
+.security-details .container .details .change-password form .content #form-current-password {
+  grid-area: current;
+}
+.security-details .container .details .change-password form .content #form-new-password {
+  grid-area: new;
+}
+.security-details .container .details .change-password form .content #form-confirm-new-password {
+  grid-area: confirm;
+}
+.security-details .container .details .change-password form .content .form-buttons {
+  grid-area: buttons;
+  margin: 20px 0;
+  display: flex;
+  gap: 20px;
+}
+.security-details .container .details .change-password form .content .form-buttons button {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+.security-details .container .details .change-password form .content .input-group {
+  display: flex;
+  flex-direction: column;
+}
+.security-details .container .details .change-password form .content .input-group label {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.security-details .container .details .change-password form .content .input-group .form-control {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 5px;
+  width: 100%;
+}
+.security-details .container .details .change-password form .content .input-group .validation-message {
+  color: red;
+  margin-top: 5px;
+  font-size: 0.875rem;
+}
+.security-details .container .details .delete-account h5 {
+  color: #6366F1;
+}
+.security-details .container .details .delete-account .checkbox {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+.security-details .container .details .delete-account .checkbox input[type=checkbox] {
+  transform: scale(1.5);
+  margin-right: 10px;
+}
+.security-details .container .details .delete-account .checkbox input[type=checkbox]:checked {
+  background-color: blue;
+}
+.security-details .container .details .delete-account #form-button {
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.security-details .container .details .delete-account #form-button:hover {
+  background-color: darkred;
+}

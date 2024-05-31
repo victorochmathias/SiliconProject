@@ -1,0 +1,116 @@
+﻿@page "/account/security"
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<section class="security-details">
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="profile-image">
+                    <img src="/images/profile-image.svg" alt="Profile Image" />
+                    <form enctype="multipart/form-data" method="post" asp-action="UploadImage" asp-controller="Account">
+                        <input id="uploadFile" type="file" name="file" hidden />
+                        <label for="uploadFile" class="btn-white-circle"><i class="fa-regular fa-refresh"></i></label>
+                    </form>
+                </div>
+            </div>
+            <nav>
+                <NavLink id="nav-settings" class="btn-nav" href="/account/details"><i class="fa-regular fa-gear"></i><span>Account Details</span></NavLink>
+                <NavLink id="nav-security" class="btn-nav" href="/account/security"><i class="fa-regular fa-lock"></i><span>Security</span></NavLink>
+                <NavLink id="nav-notifications" class="btn-nav" href="/account/notifications"><i class="fa-regular fa-bell"></i><span>Notifications</span></NavLink>
+                <NavLink id="nav-bookmark" class="btn-nav" href="/account/savedcourses"><i class="fa-regular fa-bookmark"></i><span>Saved Courses</span></NavLink>
+                <NavLink id="nav-signout" class="btn-nav" href="/account/logout"><i class="fa-regular fa-arrow-right-from-bracket"></i><span>Sign Out</span></NavLink>
+            </nav>
+        </aside>
+
+        <div class="details">
+            <section class="change-password">
+                <EditForm Model="@ChangePasswordModel" OnValidSubmit="ChangePassword" FormName="passwordChangeForm" novalidate>
+                    <h2>Security</h2>
+                    <h5>Password</h5>
+                    <div class="content">
+                        <div id="form-current-password" class="input-group">
+                            <label>Current Password</label>
+                            <InputText @bind-Value="ChangePasswordModel.CurrentPassword" type="password" />
+                            <ValidationMessage For="@(() => ChangePasswordModel.CurrentPassword)" />
+                        </div>
+                        <div id="form-new-password" class="input-group">
+                            <label>New Password</label>
+                            <InputText @bind-Value="ChangePasswordModel.NewPassword" type="password" />
+                            <ValidationMessage For="@(() => ChangePasswordModel.NewPassword)" />
+                        </div>
+                        <div id="form-confirm-new-password" class="input-group">
+                            <label>Confirm New Password</label>
+                            <InputText @bind-Value="ChangePasswordModel.ConfirmNewPassword" type="password" />
+                            <ValidationMessage For="@(() => ChangePasswordModel.ConfirmNewPassword)" />
+                        </div>
+                        <div class="form-buttons">
+                            <button class="btn-gray" type="reset">Cancel</button>
+                            <button class="btn-theme" type="submit">Change password</button>
+                        </div>
+                    </div>
+                </EditForm>
+            </section>
+            <hr />
+            <form method="post" asp-controller="Account" asp-action="DeleteUser" id="delete-account-form">
+                <section class="delete-account">
+                    <h5>Delete account</h5>
+                    <p>When you delete your account, your public profile will be deactivated immediately. If you change your mind before the 14 days are up, sign in with your email and password, and we’ll send you a link to reactivate your account.</p>
+                    <div class="checkbox">
+                        <input type="checkbox" id="delete-account" name="delete-account" required />
+                        <label for="delete-account">Yes, I want to delete my account.</label>
+                    </div>
+                    <button id="form-button" class="btn-theme-s" type="submit">Delete</button>
+                </section>
+            </form>
+        </div>
+    </div>
+</section>
+
+@code {
+    private ChangePasswordViewModel ChangePasswordModel = new ChangePasswordViewModel();
+    private string? message;
+
+    private async Task ChangePassword()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = await UserManager.GetUserAsync(authState.User);
+
+        if (user != null)
+        {
+            Console.WriteLine("CurrentPassword: " + ChangePasswordModel.CurrentPassword); // Loggutskrift
+
+            var result = await UserManager.ChangePasswordAsync(user, ChangePasswordModel.CurrentPassword, ChangePasswordModel.NewPassword);
+            if (result.Succeeded)
+            {
+                message = "Password changed successfully.";
+                await SignInManager.RefreshSignInAsync(user);
+            }
+            else
+            {
+                message = "Error changing password.";
+            }
+        }
+    }
+
+    public class ChangePasswordViewModel
+    {
+        [Required(ErrorMessage = "Current password is required")]
+        [DataType(DataType.Password)]
+        public string CurrentPassword { get; set; } = null!;
+
+        [Required(ErrorMessage = "New password is required")]
+        [DataType(DataType.Password)]
+        [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,}$", ErrorMessage = "Invalid password")]
+        public string NewPassword { get; set; } = null!;
+
+        [Required(ErrorMessage = "Password must be confirmed")]
+        [DataType(DataType.Password)]
+        [Compare(nameof(NewPassword), ErrorMessage = "Password does not match")]
+        public string ConfirmNewPassword { get; set; } = null!;
+    }
+}
