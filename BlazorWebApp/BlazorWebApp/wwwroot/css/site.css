@@ -3427,16 +3427,10 @@ footer .container span {
 }
 
 .security-details .container {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: grid !important;
+  grid-template-columns: 2fr 5fr;
   gap: 150px;
   margin-bottom: 70px;
-}
-@media (min-width: 768px) {
-  .security-details .container {
-    display: grid;
-    grid-template-columns: 2fr 5fr;
-  }
 }
 .security-details .container aside {
   border-right: 1px solid #E2E5F1;
@@ -3480,7 +3474,7 @@ footer .container span {
   font-size: 16px !important;
 }
 .security-details .container aside nav {
-  display: flex;
+  display: block;
   justify-content: center;
   gap: 15px;
   margin-bottom: 2rem;
@@ -3530,7 +3524,6 @@ footer .container span {
 }
 .security-details .container .details {
   margin-top: 50px;
-  width: 100%;
 }
 .security-details .container .details .change-password h2 {
   color: #6366F1;

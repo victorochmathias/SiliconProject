@@ -1,13 +1,7 @@
 .security-details {
     .container {
-        display: grid;
-        grid-template-columns: 1fr;
-
-        @include md {
-            display: grid;
-            grid-template-columns: 2fr 5fr;
-        }
-
+        display: grid !important;
+        grid-template-columns: 2fr 5fr;
         gap: 150px;
         margin-bottom: 70px;
 
@@ -55,7 +49,7 @@
             }
 
             nav {
-                display: flex;
+                display: block;
                 justify-content: center;
                 gap: 15px;
                 margin-bottom: 2rem;
@@ -111,7 +105,6 @@
 
         .details {
             margin-top: 50px;
-            width: 100%;
 
             .change-password {
                 h2 {
